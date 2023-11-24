@@ -20,7 +20,6 @@ app.get('/api/items', async (req, res) => {
 
 
 app.post('/api/login', async (req, res) => {
-
     try {
         const { username, password } = req.body;
         if (!username || !password) {
@@ -34,7 +33,10 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        const passwordMatch = await executeQuery(userQuery, [password]);
+        const hashedPasswordFromDB = user[0].password; 
+
+        // Compare hashed password
+        const passwordMatch = await comparePasswords(password, hashedPasswordFromDB);
 
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Invalid credentials' });
@@ -46,6 +48,11 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+function comparePasswords(password, hashedPassword) {
+    return password === hashedPassword;
+}
+
 
 
 app.post('/api/add-item', async (req, res) => {
