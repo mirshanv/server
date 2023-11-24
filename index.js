@@ -35,7 +35,6 @@ app.post('/api/login', async (req, res) => {
 
         const hashedPasswordFromDB = user[0].password; 
 
-        // Compare hashed password
         const passwordMatch = await comparePasswords(password, hashedPasswordFromDB);
 
         if (!passwordMatch) {
